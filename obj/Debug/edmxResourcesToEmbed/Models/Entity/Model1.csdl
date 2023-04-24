@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MvcProjeModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="CategoryTable">
+    <Key>
+      <PropertyRef Name="CategoryID" />
+    </Key>
+    <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="ProductTable" Relationship="Self.FK_ProductTable_CategoryTable" FromRole="CategoryTable" ToRole="ProductTable" />
+  </EntityType>
+  <EntityType Name="CustomerTable">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CustomerLastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="SalesTable" Relationship="MvcProjeModel.FK_SalesID_CustomerTable1" FromRole="CustomerTable" ToRole="SalesTable1" />
+  </EntityType>
+  <EntityType Name="ProductTable">
+    <Key>
+      <PropertyRef Name="ProductID" />
+    </Key>
+    <Property Name="ProductID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ProductName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ProductCategory" Type="Int32" />
+    <Property Name="ProductBrand" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="ProductStock" Type="Int16" />
+    <NavigationProperty Name="CategoryTable" Relationship="Self.FK_ProductTable_CategoryTable" FromRole="ProductTable" ToRole="CategoryTable" />
+    <NavigationProperty Name="SalesTable" Relationship="MvcProjeModel.FK_SalesID_ProductTable1" FromRole="ProductTable" ToRole="SalesTable1" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <Association Name="FK_ProductTable_CategoryTable">
+    <End Role="CategoryTable" Type="Self.CategoryTable" Multiplicity="0..1" />
+    <End Role="ProductTable" Type="Self.ProductTable" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CategoryTable">
+        <PropertyRef Name="CategoryID" />
+      </Principal>
+      <Dependent Role="ProductTable">
+        <PropertyRef Name="ProductCategory" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="MvcProjeEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="CategoryTable" EntityType="Self.CategoryTable" />
+    <EntitySet Name="CustomerTable" EntityType="Self.CustomerTable" />
+    <EntitySet Name="ProductTable" EntityType="Self.ProductTable" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <AssociationSet Name="FK_ProductTable_CategoryTable" Association="Self.FK_ProductTable_CategoryTable">
+      <End Role="CategoryTable" EntitySet="CategoryTable" />
+      <End Role="ProductTable" EntitySet="ProductTable" />
+    </AssociationSet>
+    <EntitySet Name="SalesTable" EntityType="MvcProjeModel.SalesTable" />
+    <AssociationSet Name="FK_SalesID_CustomerTable1" Association="MvcProjeModel.FK_SalesID_CustomerTable1">
+      <End Role="CustomerTable" EntitySet="CustomerTable" />
+      <End Role="SalesTable1" EntitySet="SalesTable" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SalesID_ProductTable1" Association="MvcProjeModel.FK_SalesID_ProductTable1">
+      <End Role="ProductTable" EntitySet="ProductTable" />
+      <End Role="SalesTable1" EntitySet="SalesTable" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="SalesTable">
+    <Key>
+      <PropertyRef Name="SalesID" />
+    </Key>
+    <Property Name="SalesID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Product" Type="Int32" />
+    <Property Name="Customer" Type="Int32" />
+    <Property Name="Piece" Type="Byte" />
+    <Property Name="Price" Type="Decimal" Precision="18" Scale="2" />
+    <NavigationProperty Name="CustomerTable" Relationship="MvcProjeModel.FK_SalesID_CustomerTable1" FromRole="SalesTable1" ToRole="CustomerTable" />
+    <NavigationProperty Name="ProductTable" Relationship="MvcProjeModel.FK_SalesID_ProductTable1" FromRole="SalesTable1" ToRole="ProductTable" />
+  </EntityType>
+  <Association Name="FK_SalesID_CustomerTable1">
+    <End Type="MvcProjeModel.CustomerTable" Role="CustomerTable" Multiplicity="0..1" />
+    <End Type="MvcProjeModel.SalesTable" Role="SalesTable1" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CustomerTable">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="SalesTable1">
+        <PropertyRef Name="Customer" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SalesID_ProductTable1">
+    <End Type="MvcProjeModel.ProductTable" Role="ProductTable" Multiplicity="0..1" />
+    <End Type="MvcProjeModel.SalesTable" Role="SalesTable1" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductTable">
+        <PropertyRef Name="ProductID" />
+      </Principal>
+      <Dependent Role="SalesTable1">
+        <PropertyRef Name="Product" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
